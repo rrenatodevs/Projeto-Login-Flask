@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <section class = "box-login">
+            <header>
+                <h1>Login</h1>
+                <p>Olá, Bem vindo novamente 👋</p>
+            </header>
+
+                <div class="button-google">
+                    <button>Login with Google</button>
+                </div>
+                <div class="line-separator">ou Login com email</div>
+                <form action="">
+                    <div class = "input-box">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Exemplo123@gmail.com">
+                    </div>
+
+                    <div class = "input-box">
+                        <label for="password">Password</label>
+                        <div class="password-field">
+                            <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+                            <button type="button" class="toggle-password" aria-label="Mostrar senha">
+                                <span class="eye">👁</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class = "remember">
+                        <label>
+                            <input type="checkbox" name="remember"> Remember me
+                        </label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <div class = "button-login">
+                        <button>Login</button>
+                    </div>
+                </form>
+                    <footer class = "create-account">
+                        <p>Não esta registrado? <a href="#">Criar uma conta</a></p>
+                    </footer>
+        </section>
+    </main>
+
+    <script>
+      const togglePassword = document.querySelector('.toggle-password');
+      const passwordInput = document.querySelector('#password');
+
+      togglePassword?.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('show');
+        togglePassword.setAttribute('aria-label', type === 'password' ? 'Mostrar senha' : 'Ocultar senha');
+      });
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // impede o recarregamento da página
+
+        const email = document.querySelector('#email').value;
+        const senha = document.querySelector('#password').value;
+
+        try {
+        const resposta = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+      alert(dados.erro);
+      return;
+        }
+
+        alert(dados.mensagem);
+        } catch (erro) {
+        console.error('Erro na requisição:', erro);
+        alert('Erro de conexão com o servidor');
+        }
+        });
+    </script>
+</body>
+</html>
